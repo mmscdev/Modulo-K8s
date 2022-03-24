@@ -12,6 +12,7 @@ func main() {
 	http.HandleFunc("/", Hello)
 	http.HandleFunc("/secret", Secret)
 	http.HandleFunc("/configmap", ConfigMap)
+	http.HandleFunc("/healthz", Healthz)
 	http.ListenAndServe(":8000", nil)
 }
 
@@ -33,4 +34,10 @@ func ConfigMap(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Error reading file: ", err)
 	}
 	fmt.Fprintf(w, "My Family: %s.", string(data))
+}
+
+func Healthz(w http.ResponseWriter, r *http.Request) {
+	name := os.Getenv("NAME")
+	age := os.Getenv("AGE")
+	fmt.Fprintf(w, "Healthz ", name, age)
 }
