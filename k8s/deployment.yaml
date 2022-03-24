@@ -14,22 +14,32 @@ spec:
       labels:
         app: "goserver"
     spec:
-      containers:
-        - name: goserver
-          image: "mmscfdev/hello-go:v5.5"
-          envFrom:
-            - configMapRef:
-                name: goserver-env
-            - secretRef:
-                name: goserver-secret
-          volumeMounts:
-            - mountPath: "/go/myfamily"
-              name: config
-              readOnly: true
-      volumes:
-          - name: config
-            configMap:
-              name: configmap-family
-              items:
-              - key: members
-                path: "family.txt"                 
+        containers:
+            - name: goserver
+              image: "mmscfdev/hello-go:v7"
+              livenessProbe:
+                httpGet:
+                  path: /teste
+                  port: 8000
+                periodSeconds: 5
+                failureThreshold: 3
+                timeoutSeconds: 1
+                successThreshold: 1
+                
+              envFrom:
+                - configMapRef:
+                    name: goserver-env
+                - secretRef:
+                    name: goserver-secret
+
+              volumeMounts:
+                - mountPath: "/go/myfamily"
+                  name: config
+                  readOnly: true
+        volumes:
+            - name: config
+              configMap:
+                name: configmap-family
+                items:
+                - key: members
+                  path: "family.txt"                 
